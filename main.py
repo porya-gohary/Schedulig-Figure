@@ -10,33 +10,45 @@ from matplotlib.gridspec import GridSpec
 core = 4  # number of Cores
 deadline = 120  # Deadline
 Max_freq = 2  # Max Freq. in GHz
+Max_temp=60     # Max Temp. in Celsius
 
 num_Hi = 4
 num_lo = 1
-num_over=0
-num_fault=0
+num_over = 0
+num_fault = 0
 
 Task_color = 'darkgrey'
 ov_color = 'red'
 fault_color = 'green'
 
-bold_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'bold'}
-regular_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'regular'}
+bold_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'bold', 'fontname':'Palatino Linotype'}
+regular_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'regular', 'fontname':'Palatino Linotype'}
 
 # power_y = [int() for _ in range(deadline)]
 core1 = [float() for _ in range(deadline)]
 core2 = [float() for _ in range(deadline)]
 core3 = [float() for _ in range(deadline)]
 core4 = [float() for _ in range(deadline)]
+temp = [float() for _ in range(deadline)]
+
 power_y = [int() for _ in range(deadline)]
+temp_max = [int() for _ in range(deadline)]
 
 for i in range(0, deadline):
     power_y[i] = i
+for i in range(0, deadline):
+    temp_max[i] = Max_temp
 
 file1 = open('core1.txt', 'r')
 file2 = open('core2.txt', 'r')
 file3 = open('core3.txt', 'r')
 file4 = open('core4.txt', 'r')
+file_temp = open('Temp.txt', 'r')
+
+i = 0;
+for line in file_temp.readlines():
+    temp[i] = float(line)
+    i += 1
 
 i = 0;
 for line in file1.readlines():
@@ -152,7 +164,7 @@ for line in file.readlines()[1:]:
     j += 1
 
 ## initialize and Read Overrun From File
-ov = [overrun() for _ in range(num_lo)]
+ov = [overrun() for _ in range(num_over)]
 file = open('Over-Tasks.txt', 'r')
 j = 0
 for line in file.readlines()[1:]:
@@ -173,9 +185,8 @@ for line in file.readlines()[1:]:
     ov[j] = Task(name, WCET, Freq, Core, Start)
     j += 1
 
-
-#ov[0] = Task('$T^o_1$', 4, 2, 2, 50)
-#ov[1] = Task('$T^o_2$', 2, 2, 2, 10)
+# ov[0] = Task('$T^o_1$', 4, 2, 2, 50)
+# ov[1] = Task('$T^o_2$', 2, 2, 2, 10)
 
 ## initialize and Read Fault From File
 f = [fault() for _ in range(num_fault)]
@@ -199,38 +210,39 @@ for line in file.readlines()[1:]:
     f[j] = Task(name, WCET, Freq, Core, Start)
     j += 1
 
-
-#f[0] = Task('$T^f_1$', 4, 2, 3, 50)
-#f[1] = Task('$T^f_2$', 2, 2, 3, 10)
-
+# f[0] = Task('$T^f_1$', 4, 2, 3, 50)
+# f[1] = Task('$T^f_2$', 2, 2, 3, 10)
 
 
 # fig = plt.figure(figsize=(deadline/4, 2.5 * core))
-fig = plt.figure(figsize=[10, 5])
+fig = plt.figure(figsize=[10, 8])
 # figure(num=None, figsize=(8, 6), dpi=80, facecolor='w', edgecolor='k')
 # ax = fig.add_subplot(111)
-ax = fig.add_axes([0, 0, 1, 1])
+ax = fig.add_axes([0, 0.25, 1, 1])
+plt.axis('off')
 
 # ax.grid()
 
 plt.xlim([-10, deadline + 10])
-plt.ylim([-10, 40 * core + 10])
+plt.ylim([-10, 36 * core + 10])
 
 # Draw Deadline
 x = [deadline, deadline]
-y = [0, 40 * core-1]
+y = [0, 26 * core - 1]
 plt.plot(x, y, '--', color='r')
-plt.text(deadline, 40 * core + 1, 'Deadline', color='r', size=11, **regular_text)
+plt.text(deadline, 26 * core + 1, 'Deadline', color='r', size=11, **regular_text)
 ###########
+#Time Label Foy Y Axes
+plt.text(deadline/2, -6, 'Time(ms)', color='black', size=11, **regular_text)
 
 # write Cores Name and Draw Axes for each core
 x = [0, 0]
-y = [0, 40 * core + 1]
+y = [0, 26 * core + 1]
 plt.plot(x, y, '-', color='black')
 t = 1
 for i in range(2, (core * 2) + 2, 2):
-    plt.text(-5, 8 + (20 * (i - 1)), 'Core ' + str(t), color='black', size=12, **regular_text)
-    ax.arrow(0, (20 * (i - 1)), deadline + 2, 0, head_width=1, head_length=1, fc='k', ec='k')
+    plt.text(-5, 5+ (13 * (i - 1)), 'Core ' + str(t), color='black', size=12, **bold_text)
+    ax.arrow(0, (13 * (i - 1)), deadline + 2, 0, head_width=1, head_length=1, fc='k', ec='k')
     t += 1
 #####
 
@@ -241,86 +253,96 @@ for i in range(0, deadline + 10, 10):
 for i in range(5, deadline + 5, 5):
     for j in range(1, (core * 2), 2):
         x = [i, i]
-        y = [20 * j - 0.5, 20 * j]
+        y = [13 * j - 0.5, 13 * j]
         plt.plot(x, y, '-', color='black')
 ######
 
 for x in T:
-    rect1 = Rectangle((x.start, 20 + (x.core - 1) * 40), x.Wcet, 12 * x.Freq / Max_freq, facecolor=Task_color,
+    rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor=Task_color,
                       edgecolor='black')
     ax.add_patch(rect1)
-    plt.text(x.start + (x.Wcet / 2), 20 + (40 * (x.core - 1)) + 6 * x.Freq / Max_freq, x.name, color='black', size=12,
+    plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=12,
              **regular_text)
 
 for x in ov:
-    rect1 = Rectangle((x.start, 20 + (x.core - 1) * 40), x.Wcet, 12 * x.Freq / Max_freq, facecolor='none', hatch="x",
+    rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor='none', hatch="x",
                       edgecolor=ov_color)
     ax.add_patch(rect1)
-    plt.text(x.start + (x.Wcet / 2), 20 + (40 * (x.core - 1)) + 6 * x.Freq / Max_freq, x.name, color='black', size=12,
+    plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=12,
              **regular_text)
 
 for x in f:
-    rect1 = Rectangle((x.start, 20 + (x.core - 1) * 40), x.Wcet, 12 * x.Freq / Max_freq, facecolor='none', hatch="//",
+    rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor='none', hatch="//",
                       edgecolor=fault_color)
     ax.add_patch(rect1)
-    plt.text(x.start + (x.Wcet / 2), 20 + (40 * (x.core - 1)) + 6 * x.Freq / Max_freq, x.name, color='black', size=12,
+    plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=12,
              **regular_text)
 
 for x in T_lo:
-    rect1 = Rectangle((x.start, 20 + (x.core - 1) * 40), x.Wcet, 12 * x.Freq / Max_freq, facecolor='none',
+    rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor='none',
                       edgecolor='black')
     ax.add_patch(rect1)
-    plt.text(x.start + (x.Wcet / 2), 20 + (40 * (x.core - 1)) + 6 * x.Freq / Max_freq, x.name, color='black', size=12,
+    plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=12,
              **regular_text)
 
-plt.axis('off')
-
 ## Core1 Power Chart
-ax2 = fig.add_axes([0.072, 0.06, 0.856, 0.09])
+ax2 = fig.add_axes([0.072, 0.31, 0.856, 0.07])
 ax2.axes.get_xaxis().set_visible(False)
 ax2.set_xlim(0, deadline)
 ax2.yaxis.set_major_locator(ticker.MultipleLocator(1))
 ax2.tick_params(axis='both', which='major', labelsize=7)
 ax2.set_ylim(0, 4)
-ax2.set_ylabel('Core 1\nPower(W)')
-ax2.plot(power_y, core1)
+ax2.set_ylabel('Core 1\nPower(W)',fontname='Palatino Linotype')
+ax2.plot(power_y, core1,color='green')
 ax2.grid(True)
 
 ## Core2 Power Chart
-ax3 = fig.add_axes([0.072, 0.28, 0.856, 0.09])
+ax3 = fig.add_axes([0.072, 0.47, 0.856, 0.07])
 ax3.axes.get_xaxis().set_visible(False)
 ax3.set_xlim(0, deadline)
 ax3.yaxis.set_major_locator(ticker.MultipleLocator(1))
 ax3.tick_params(axis='both', which='major', labelsize=7)
 ax3.set_ylim(0, 4)
-ax3.set_ylabel('Core 2\nPower(W)')
+ax3.set_ylabel('Core 2\nPower(W)',fontname='Palatino Linotype')
 ax3.grid(True)
-ax3.plot(power_y, core2)
+ax3.plot(power_y, core2,color='green')
 
 ## Core3 Power Chart
-ax4 = fig.add_axes([0.072, 0.51, 0.856, 0.09])
+ax4 = fig.add_axes([0.072, 0.63, 0.856, 0.07])
 ax4.axes.get_xaxis().set_visible(False)
 ax4.set_xlim(0, deadline)
 ax4.yaxis.set_major_locator(ticker.MultipleLocator(1))
 ax4.tick_params(axis='both', which='major', labelsize=7)
 ax4.set_ylim(0, 4)
-ax4.set_ylabel('Core 3\nPower(W)')
+ax4.set_ylabel('Core 3\nPower(W)',fontname='Palatino Linotype')
 ax4.grid(True)
-ax4.plot(power_y, core3)
+ax4.plot(power_y, core3,color='green')
 
 ## Core4 Power Chart
-ax5 = fig.add_axes([0.072, 0.73, 0.856, 0.09])
+ax5 = fig.add_axes([0.072, 0.79, 0.856, 0.07])
 ax5.axes.get_xaxis().set_visible(False)
 ax5.set_xlim(0, deadline)
 ax5.yaxis.set_major_locator(ticker.MultipleLocator(1))
 ax5.tick_params(axis='both', which='major', labelsize=7)
 ax5.set_ylim(0, 4)
-ax5.set_ylabel('Core 4\nPower(W)')
+ax5.set_ylabel('Core 4\nPower(W)',fontname='Palatino Linotype')
 ax5.grid(True)
-ax5.plot(power_y, core4)
+ax5.plot(power_y, core4,color='green')
 
+## Tempreture Chart
+ax6 = fig.add_axes([0.072, 0.05, 0.856, 0.2])
+#ax6.axes.get_xaxis().set_visible(False)
+ax6.set_xlim(0, deadline)
+ax6.yaxis.set_major_locator(ticker.MultipleLocator(10))
+ax6.tick_params(axis='both', which='major', labelsize=8)
+ax6.set_ylim(0, 80)
+ax6.set_ylabel('Max. Temperature[°C]',fontname='Palatino Linotype')
+ax6.grid(True)
+ax6.plot(power_y, temp)
+ax6.plot(power_y,temp_max,'--',color='darkred')
+
+plt.savefig('test.pdf')
 plt.show()
-# plt.savefig('test.png')
 
 # someX, someY = 0.5, 0.5
 # plt.figure()
