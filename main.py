@@ -4,10 +4,13 @@ from matplotlib.patches import Rectangle
 from dataclasses import dataclass
 
 core = 4  # number of Cores
-deadline = 100  # Deadline
+deadline = 120  # Deadline
 Max_freq = 2  # Max Freq. in GHz
 
 Task_color = 'darkgrey'
+ov_color = 'red'
+fault_color = 'green'
+
 
 
 @dataclass
@@ -19,8 +22,29 @@ class Task:
     core: int = 0
     start: int = 0
 
+
 @dataclass
-class Task_MC:
+class Task_lo:
+    # Task specification  [ Name, WCET , Freq, Core, Start Time]
+    name: str = 'none'
+    Wcet: int = 0
+    Freq: float = 0
+    core: int = 0
+    start: int = 0
+
+
+@dataclass
+class overrun:
+    # Task specification  [ Name, WCET , Freq, Core, Start Time]
+    name: str = 'none'
+    Wcet: int = 0
+    Freq: float = 0
+    core: int = 0
+    start: int = 0
+
+
+@dataclass
+class fault:
     # Task specification  [ Name, WCET , Freq, Core, Start Time]
     name: str = 'none'
     Wcet: int = 0
@@ -31,11 +55,26 @@ class Task_MC:
 
 # T = Task('T2', 10, 2, 1, 10)
 
-T = [Task() for _ in range(3)]
+T = [Task() for _ in range(4)]
 
-T[0] = Task('$T_1$', 20, 1.6, 2, 30)
-T[1] = Task('$T_2$', 10, 2, 1, 10)
-T[2] = Task('$T_3$', 20, 1.2, 1, 20)
+# T[0] = Task('$T_1$', 12, 1.6, 2, 30)
+T[0] = Task('$T_1$', 12, 2, 1, 0)
+T[1] = Task('$T_2$', 8, 2, 2, 12)
+T[2] = Task('$T_3$', 7, 2, 3, 12)
+T[3] = Task('$T_4$', 4, 2, 3, 20)
+
+T_lo=[Task_lo() for _ in range(1)]
+T_lo[0]=Task('$T_5$', 5, 2, 4, 20)
+
+ov = [overrun() for _ in range(2)]
+
+ov[0] = Task('$T^o_1$', 4, 2, 2, 50)
+ov[1] = Task('$T^o_2$', 2, 2, 2, 10)
+
+f = [fault() for _ in range(2)]
+
+f[0] = Task('$T^f_1$', 4, 2, 3, 50)
+f[1] = Task('$T^f_2$', 2, 2, 3, 10)
 
 bold_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'bold'}
 regular_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'regular'}
@@ -56,10 +95,12 @@ plt.text(deadline, 20 * core + 1, 'Deadline', color='r', size=11, **regular_text
 ###########
 
 # write Cores Name and Draw Axes for each core
+x = [0, 0]
+y = [0, 20 * core + 1]
+plt.plot(x, y, '-', color='black')
 for i in range(1, core + 1):
     plt.text(-6, 8 + (20 * (i - 1)), 'Core ' + str(i), color='black', size=12, **regular_text)
     ax.arrow(0, (20 * (i - 1)), deadline + 2, 0, head_width=1, head_length=1, fc='k', ec='k')
-    ax.arrow(0, (20 * (i - 1)), 0, 15, head_width=1, head_length=1, fc='k', ec='k')
 #####
 
 # Write Time under Axes
@@ -75,6 +116,27 @@ for i in range(5, deadline + 5, 5):
 
 for x in T:
     rect1 = Rectangle((x.start, (x.core - 1) * 20), x.Wcet, 12 * x.Freq / Max_freq, facecolor=Task_color,
+                      edgecolor='black')
+    ax.add_patch(rect1)
+    plt.text(x.start + (x.Wcet / 2), (20 * (x.core - 1)) + 6 * x.Freq / Max_freq, x.name, color='black', size=12,
+             **regular_text)
+
+for x in ov:
+    rect1 = Rectangle((x.start, (x.core - 1) * 20), x.Wcet, 12 * x.Freq / Max_freq, facecolor='none', hatch="x",
+                      edgecolor=ov_color)
+    ax.add_patch(rect1)
+    plt.text(x.start + (x.Wcet / 2), (20 * (x.core - 1)) + 6 * x.Freq / Max_freq, x.name, color='black', size=12,
+             **regular_text)
+
+for x in f:
+    rect1 = Rectangle((x.start, (x.core - 1) * 20), x.Wcet, 12 * x.Freq / Max_freq, facecolor='none', hatch="//",
+                      edgecolor=fault_color)
+    ax.add_patch(rect1)
+    plt.text(x.start + (x.Wcet / 2), (20 * (x.core - 1)) + 6 * x.Freq / Max_freq, x.name, color='black', size=12,
+             **regular_text)
+
+for x in T_lo:
+    rect1 = Rectangle((x.start, (x.core - 1) * 20), x.Wcet, 12 * x.Freq / Max_freq, facecolor='none',
                       edgecolor='black')
     ax.add_patch(rect1)
     plt.text(x.start + (x.Wcet / 2), (20 * (x.core - 1)) + 6 * x.Freq / Max_freq, x.name, color='black', size=12,
