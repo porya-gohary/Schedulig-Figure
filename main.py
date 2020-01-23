@@ -2,6 +2,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from dataclasses import dataclass
+import numpy as np
+import matplotlib.ticker as ticker
 from matplotlib.gridspec import GridSpec
 
 core = 4  # number of Cores
@@ -11,6 +13,21 @@ Max_freq = 2  # Max Freq. in GHz
 Task_color = 'darkgrey'
 ov_color = 'red'
 fault_color = 'green'
+
+
+
+#power_y = [int() for _ in range(deadline)]
+core1= [float() for _ in range(deadline)]
+power_y = [int() for _ in range(deadline)]
+
+for i in range (0 ,deadline):
+    power_y[i]=i
+
+file=open('core1.txt','r')
+i=0;
+for line in file.readlines():
+    core1[i]=float(line)
+    i+=1
 
 
 @dataclass
@@ -80,14 +97,15 @@ bold_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight
 regular_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'regular'}
 
 # fig = plt.figure(figsize=(deadline/4, 2.5 * core))
-fig = plt.figure(constrained_layout=True,figsize=[10,5])
+fig = plt.figure(figsize=[10,5])
 # figure(num=None, figsize=(8, 6), dpi=80, facecolor='w', edgecolor='k')
-ax = fig.add_subplot(111)
+#ax = fig.add_subplot(111)
+ax = fig.add_axes([0, 0, 1, 1])
 
 # ax.grid()
 
 plt.xlim([-10, deadline + 10])
-plt.ylim([-10, 40 * core])
+plt.ylim([-10, 40 * core+10])
 
 # Draw Deadline
 x = [deadline, deadline]
@@ -148,12 +166,17 @@ for x in T_lo:
 
 plt.axis('off')
 
-#fig=plt.figure(constrained_layout=True)
-gs = GridSpec(8, 1,left=0.11)
-#ax = fig.add_subplot(gs[2, 0])
-#fig, ax = plt.subplots(gs[1, 0],figsize=(15,15))
-#fig.set_figheight(15)
+ax2=fig.add_axes([0.072, 0.06, 0.856, 0.09])
+ax2.axes.get_xaxis().set_visible(False)
+ax2.set_xlim(0,deadline)
+ax2.yaxis.set_major_locator(ticker.MultipleLocator(1))
+
+ax2.set_ylim(0, 4)
+ax2.set_ylabel('Core 1\nPower')
+ax2.plot(power_y,core1)
+ax2.grid(True)
 plt.show()
+#plt.savefig('test.png')
 
 # someX, someY = 0.5, 0.5
 # plt.figure()
