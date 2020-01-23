@@ -4,11 +4,15 @@ from matplotlib.patches import Rectangle
 from dataclasses import dataclass
 import numpy as np
 import matplotlib.ticker as ticker
+
 from matplotlib.gridspec import GridSpec
 
 core = 4  # number of Cores
 deadline = 120  # Deadline
 Max_freq = 2  # Max Freq. in GHz
+
+num_Hi = 4
+num_lo = 1
 
 Task_color = 'darkgrey'
 ov_color = 'red'
@@ -89,18 +93,57 @@ class fault:
     start: int = 0
 
 
-# T = Task('T2', 10, 2, 1, 10)
+name = 'none'
+WCET = 10
+Freq = 2
+Core = 1
+Start = 0
 
-T = [Task() for _ in range(4)]
+## initialize and Read HI Tasks From File
+T = [Task() for _ in range(num_Hi)]
+file = open('HI-Tasks.txt', 'r')
+j = 0
+for line in file.readlines()[1:]:
+    # print(line)
+    inputs = line.split('\t')
+    # print(inputs)
+    i = 0
+    for y in inputs:
+        if (i == 0):
+            name = str(y)
+            # print(name)
+        if (i == 1):
+            WCET = int(y)
+        if (i == 2):
+            Freq = float(y)
+        if (i == 3):
+            Core = int(y)
+        if (i == 4):
+            Start = int(y)
+        i += 1
+    T[j] = Task(name, WCET, Freq, Core, Start)
+    j += 1
 
-# T[0] = Task('$T_1$', 12, 1.6, 2, 30)
-T[0] = Task('$T_1$', 12, 2, 1, 0)
-T[1] = Task('$T_2$', 8, 2, 2, 12)
-T[2] = Task('$T_3$', 7, 2, 3, 12)
-T[3] = Task('$T_4$', 4, 2, 3, 20)
-
-T_lo = [Task_lo() for _ in range(1)]
-T_lo[0] = Task('$T_5$', 5, 2, 4, 19)
+T_lo = [Task_lo() for _ in range(num_lo)]
+file = open('LO-Tasks.txt', 'r')
+j = 0
+for line in file.readlines()[1:]:
+    inputs = line.split('\t')
+    i = 0
+    for y in inputs:
+        if (i == 0):
+            name = str(y)
+        if (i == 1):
+            WCET = int(y)
+        if (i == 2):
+            Freq = float(y)
+        if (i == 3):
+            Core = int(y)
+        if (i == 4):
+            Start = int(y)
+        i += 1
+    T_lo[j] = Task(name, WCET, Freq, Core, Start)
+    j += 1
 
 ov = [overrun() for _ in range(2)]
 
@@ -206,9 +249,8 @@ ax3.set_ylabel('Core 2\nPower')
 ax3.grid(True)
 ax3.plot(power_y, core2)
 
-
 ## Core3 Power Chart
-ax4 = fig.add_axes([0.072, 0.51 , 0.856, 0.09])
+ax4 = fig.add_axes([0.072, 0.51, 0.856, 0.09])
 ax4.axes.get_xaxis().set_visible(False)
 ax4.set_xlim(0, deadline)
 ax4.yaxis.set_major_locator(ticker.MultipleLocator(1))
@@ -218,7 +260,7 @@ ax4.grid(True)
 ax4.plot(power_y, core3)
 
 ## Core4 Power Chart
-ax5 = fig.add_axes([0.072, 0.73 , 0.856, 0.09])
+ax5 = fig.add_axes([0.072, 0.73, 0.856, 0.09])
 ax5.axes.get_xaxis().set_visible(False)
 ax5.set_xlim(0, deadline)
 ax5.yaxis.set_major_locator(ticker.MultipleLocator(1))
@@ -226,7 +268,6 @@ ax5.set_ylim(0, 4)
 ax5.set_ylabel('Core 4\nPower')
 ax5.grid(True)
 ax5.plot(power_y, core4)
-
 
 plt.show()
 # plt.savefig('test.png')
