@@ -10,19 +10,23 @@ from matplotlib.gridspec import GridSpec
 core = 4  # number of Cores
 deadline = 120  # Deadline
 Max_freq = 2  # Max Freq. in GHz
-Max_temp=60     # Max Temp. in Celsius
+Max_temp = 60  # Max Temp. in Celsius
 
 num_Hi = 4
 num_lo = 1
-num_over = 0
+num_over = 4
 num_fault = 0
+
+print_over = False
 
 Task_color = 'darkgrey'
 ov_color = 'red'
 fault_color = 'green'
 
-bold_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'bold', 'fontname':'Palatino Linotype'}
-regular_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'regular', 'fontname':'Palatino Linotype'}
+bold_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'bold',
+             'fontname': 'Palatino Linotype'}
+regular_text = {'ha': 'center', 'va': 'center', 'family': 'sans-serif', 'fontweight': 'regular',
+                'fontname': 'Palatino Linotype'}
 
 # power_y = [int() for _ in range(deadline)]
 core1 = [float() for _ in range(deadline)]
@@ -232,8 +236,8 @@ y = [0, 26 * core - 1]
 plt.plot(x, y, '--', color='r')
 plt.text(deadline, 26 * core + 1, 'Deadline', color='r', size=11, **regular_text)
 ###########
-#Time Label Foy Y Axes
-plt.text(deadline/2, -6, 'Time(ms)', color='black', size=11, **regular_text)
+# Time Label Foy Y Axes
+plt.text(deadline / 2, -6, 'Time(ms)', color='black', size=11, **regular_text)
 
 # write Cores Name and Draw Axes for each core
 x = [0, 0]
@@ -241,7 +245,7 @@ y = [0, 26 * core + 1]
 plt.plot(x, y, '-', color='black')
 t = 1
 for i in range(2, (core * 2) + 2, 2):
-    plt.text(-5, 5+ (13 * (i - 1)), 'Core ' + str(t), color='black', size=12, **bold_text)
+    plt.text(-5, 5 + (13 * (i - 1)), 'Core ' + str(t), color='black', size=12, **bold_text)
     ax.arrow(0, (13 * (i - 1)), deadline + 2, 0, head_width=1, head_length=1, fc='k', ec='k')
     t += 1
 #####
@@ -261,15 +265,16 @@ for x in T:
     rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor=Task_color,
                       edgecolor='black')
     ax.add_patch(rect1)
-    plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=12,
+    plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=17,
              **regular_text)
 
 for x in ov:
     rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor='none', hatch="x",
                       edgecolor=ov_color)
     ax.add_patch(rect1)
-    plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=12,
-             **regular_text)
+    if (print_over):
+        plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black',
+                 size=12, **regular_text)
 
 for x in f:
     rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor='none', hatch="//",
@@ -282,7 +287,7 @@ for x in T_lo:
     rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor='none',
                       edgecolor='black')
     ax.add_patch(rect1)
-    plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=12,
+    plt.text(x.start + (x.Wcet / 2), 13 + (26 * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=17,
              **regular_text)
 
 ## Core1 Power Chart
@@ -292,8 +297,8 @@ ax2.set_xlim(0, deadline)
 ax2.yaxis.set_major_locator(ticker.MultipleLocator(1))
 ax2.tick_params(axis='both', which='major', labelsize=7)
 ax2.set_ylim(0, 4)
-ax2.set_ylabel('Core 1\nPower(W)',fontname='Palatino Linotype')
-ax2.plot(power_y, core1,color='green')
+ax2.set_ylabel('Core 1\nPower(W)', fontname='Palatino Linotype')
+ax2.plot(power_y, core1, color='green')
 ax2.grid(True)
 
 ## Core2 Power Chart
@@ -303,9 +308,9 @@ ax3.set_xlim(0, deadline)
 ax3.yaxis.set_major_locator(ticker.MultipleLocator(1))
 ax3.tick_params(axis='both', which='major', labelsize=7)
 ax3.set_ylim(0, 4)
-ax3.set_ylabel('Core 2\nPower(W)',fontname='Palatino Linotype')
+ax3.set_ylabel('Core 2\nPower(W)', fontname='Palatino Linotype')
 ax3.grid(True)
-ax3.plot(power_y, core2,color='green')
+ax3.plot(power_y, core2, color='green')
 
 ## Core3 Power Chart
 ax4 = fig.add_axes([0.072, 0.63, 0.856, 0.07])
@@ -314,9 +319,9 @@ ax4.set_xlim(0, deadline)
 ax4.yaxis.set_major_locator(ticker.MultipleLocator(1))
 ax4.tick_params(axis='both', which='major', labelsize=7)
 ax4.set_ylim(0, 4)
-ax4.set_ylabel('Core 3\nPower(W)',fontname='Palatino Linotype')
+ax4.set_ylabel('Core 3\nPower(W)', fontname='Palatino Linotype')
 ax4.grid(True)
-ax4.plot(power_y, core3,color='green')
+ax4.plot(power_y, core3, color='green')
 
 ## Core4 Power Chart
 ax5 = fig.add_axes([0.072, 0.79, 0.856, 0.07])
@@ -325,23 +330,24 @@ ax5.set_xlim(0, deadline)
 ax5.yaxis.set_major_locator(ticker.MultipleLocator(1))
 ax5.tick_params(axis='both', which='major', labelsize=7)
 ax5.set_ylim(0, 4)
-ax5.set_ylabel('Core 4\nPower(W)',fontname='Palatino Linotype')
+ax5.set_ylabel('Core 4\nPower(W)', fontname='Palatino Linotype')
 ax5.grid(True)
-ax5.plot(power_y, core4,color='green')
+ax5.plot(power_y, core4, color='green')
 
 ## Tempreture Chart
 ax6 = fig.add_axes([0.072, 0.05, 0.856, 0.2])
-#ax6.axes.get_xaxis().set_visible(False)
+# ax6.axes.get_xaxis().set_visible(False)
 ax6.set_xlim(0, deadline)
 ax6.yaxis.set_major_locator(ticker.MultipleLocator(10))
 ax6.tick_params(axis='both', which='major', labelsize=8)
 ax6.set_ylim(0, 80)
-ax6.set_ylabel('Max. Temperature[°C]',fontname='Palatino Linotype')
+ax6.set_ylabel('Max. Temperature[°C]',fontsize=12, fontname='Palatino Linotype')
 ax6.grid(True)
 ax6.plot(power_y, temp)
-ax6.plot(power_y,temp_max,'--',color='darkred')
+ax6.plot(power_y, temp_max, '--', color='darkred')
 
 plt.savefig('test.pdf')
+plt.savefig('test.png')
 plt.show()
 
 # someX, someY = 0.5, 0.5
