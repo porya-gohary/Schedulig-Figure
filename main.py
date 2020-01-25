@@ -12,12 +12,13 @@ deadline = 120  # Deadline
 Max_freq = 2  # Max Freq. in GHz
 Max_temp = 60  # Max Temp. in Celsius
 
-num_Hi = 4
+num_Hi = 12
 num_lo = 1
-num_over = 4
+num_over = 0
 num_fault = 0
 
 print_over = False
+
 
 Task_color = 'darkgrey'
 ov_color = 'red'
@@ -49,26 +50,26 @@ file3 = open('core3.txt', 'r')
 file4 = open('core4.txt', 'r')
 file_temp = open('Temp.txt', 'r')
 
-i = 0;
+i = 0
 for line in file_temp.readlines():
     temp[i] = float(line)
     i += 1
 
-i = 0;
+i = 0
 for line in file1.readlines():
     core1[i] = float(line)
     i += 1
-i = 0;
+i = 0
 for line in file2.readlines():
     core2[i] = float(line)
     i += 1
 
-i = 0;
+i = 0
 for line in file3.readlines():
     core3[i] = float(line)
     i += 1
 
-i = 0;
+i = 0
 for line in file4.readlines():
     core4[i] = float(line)
     i += 1
