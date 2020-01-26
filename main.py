@@ -12,13 +12,36 @@ deadline = 120  # Deadline
 Max_freq = 2  # Max Freq. in GHz
 Max_temp = 60  # Max Temp. in Celsius
 
-num_Hi = 12
-num_lo = 1
+num_Hi = 0
+num_lo = 1 
 num_over = 0
 num_fault = 0
 
 print_over = False
 
+file = open('HI-Tasks.txt', 'r')
+j = 0
+for line in file.readlines()[1:]:
+    j+=1
+num_Hi=j
+
+file = open('LO-Tasks.txt', 'r')
+j = 0
+for line in file.readlines()[1:]:
+    j+=1
+num_lo=j
+
+file = open('Over-Tasks.txt', 'r')
+j = 0
+for line in file.readlines()[1:]:
+    j+=1
+num_over=j
+
+file = open('Fault-Tasks.txt', 'r')
+j = 0
+for line in file.readlines()[1:]:
+    j+=1
+num_fault=j
 
 Task_color = 'darkgrey'
 ov_color = 'red'
