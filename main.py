@@ -132,8 +132,8 @@ for line in file.readlines()[1:]:
     i = 0
     for y in inputs:
         if (i == 0):
-            name = str(y)
-            # print(name)
+            name = "$\\mathrm{"+str(y)+"}$"
+            #print(name)
         if (i == 1):
             WCET = int(y)
         if (i == 2):
@@ -155,7 +155,7 @@ for line in file.readlines()[1:]:
     i = 0
     for y in inputs:
         if (i == 0):
-            name = str(y)
+            name = "$\\mathrm{"+str(y)+"}$"
         if (i == 1):
             WCET = int(y)
         if (i == 2):
@@ -270,7 +270,7 @@ for x in T:
              **regular_text)
 
 for x in ov:
-    rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor='none', hatch="x",
+    rect1 = Rectangle((x.start, 13 + (x.core - 1) * 26), x.Wcet, 10 * x.Freq / Max_freq, facecolor='none', hatch="////",
                       edgecolor=ov_color)
     ax.add_patch(rect1)
     if (print_over):
