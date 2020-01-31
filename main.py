@@ -20,6 +20,7 @@ num_fault = 0
 num_faulty=0
 
 print_over = False
+Faulty_sign= False
 
 file = open('HI-Tasks.txt', 'r')
 j = 0
@@ -253,8 +254,6 @@ for line in file.readlines()[1:]:
     line=line.rstrip('\n')
     f_t[j]="$\\mathrm{"+str(line)+"}$"
     j += 1
-# f[0] = Task('$T^f_1$', 4, 2, 3, 50)
-# f[1] = Task('$T^f_2$', 2, 2, 3, 10)
 
 
 # fig = plt.figure(figsize=(deadline/4, 2.5 * core))
@@ -386,25 +385,27 @@ ax6.plot(power_y, temp)
 ax6.plot(power_y, temp_max, '--', color='darkred')
 
 ## Add Fault Sign To Tasks
-im = Image.open('fault.png')
-height = int(im.size[1]/10)
-width = int(im.size[0]/10)
-#print(width)
-im = im.resize((width, height), Image.NEAREST)
-im = np.array(im).astype(np.float) / 255
-for x in f_t:
-    print(x+ "FAULTY")
-    for y in T:
-        #print(y.name)
-        if (y.name==x):
-            fig.figimage(im, int(y.start)*8+(y.Wcet)*3+10, 225+((y.core)*125))
-            #print(y.Wcet)
+if(Faulty_sign):
+    im = Image.open('fault.png')
+    height = int(im.size[1]/10)
+    width = int(im.size[0]/10)
+    #print(width)
+    im = im.resize((width, height), Image.NEAREST)
+    im = np.array(im).astype(np.float) / 255
+    for x in f_t:
+        #print(x+ "FAULTY")
+        for y in T:
+            #print(y.name)
+            if (y.name==x):
+                fig.figimage(im, int(y.start)*8+(y.Wcet)*3+10, 225+((y.core)*125))
+                #print(y.Wcet)
 
 # plt.plot(np.arange(10), 4 * np.arange(10))
 
 
 plt.savefig('test.pdf')
 plt.savefig('test.png')
+plt.savefig('test.svg')
 plt.show()
 
 # someX, someY = 0.5, 0.5
