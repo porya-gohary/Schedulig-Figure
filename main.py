@@ -5,11 +5,12 @@ from dataclasses import dataclass
 import numpy as np
 import matplotlib.ticker as ticker
 from PIL import Image
+import math
 
 from matplotlib.gridspec import GridSpec
 
 core = 4  # number of Cores
-deadline = 120  # Deadline
+deadline = 75  # Deadline
 Max_freq = 2  # Max Freq. in GHz
 Max_temp = 60  # Max Temp. in Celsius
 
@@ -257,7 +258,7 @@ for line in file.readlines()[1:]:
 
 
 # fig = plt.figure(figsize=(deadline/4, 2.5 * core))
-fig = plt.figure(figsize=[10, 8])
+fig = plt.figure(figsize=[10*deadline/120, 8])
 # figure(num=None, figsize=(8, 6), dpi=80, facecolor='w', edgecolor='k')
 # ax = fig.add_subplot(111)
 ax = fig.add_axes([0, 0.25, 1, 1])
@@ -273,6 +274,7 @@ x = [deadline, deadline]
 y = [0, 26 * core - 1]
 plt.plot(x, y, '--', color='r')
 plt.text(deadline, 26 * core + 1, 'Deadline', color='r', size=11, **regular_text)
+
 ###########
 # Time Label Foy Y Axes
 plt.text(deadline / 2, -6, 'Time(ms)', color='black', size=11, **regular_text)
@@ -329,7 +331,15 @@ for x in T_lo:
              **regular_text)
 
 ## Core1 Power Chart
-ax2 = fig.add_axes([0.072, 0.31, 0.856, 0.07])
+#ax2 = fig.add_axes([0.072, 0.31, 0.856, 0.07])
+#ax2 = fig.add_axes([0.102, 0.31, 0.8, 0.07])
+#ax2 = fig.add_axes([0.126, 0.31, 0.744, 0.07])
+z=deadline
+x= 0.2533524 - 0.002975714*z + 0.00001623545*math.pow(z,2) - 3.359788e-8*math.pow(z,3)
+y = 0.3695238 + 0.009609524*z - 0.00006597884*math.pow(z,2) + 1.640212e-7*math.pow(z,3)
+#print(x)
+ax2 = fig.add_axes([x, 0.31, y, 0.07])
+
 ax2.axes.get_xaxis().set_visible(False)
 ax2.set_xlim(0, deadline)
 ax2.yaxis.set_major_locator(ticker.MultipleLocator(1))
@@ -340,7 +350,8 @@ ax2.plot(power_y, core1, color='green')
 ax2.grid(True)
 
 ## Core2 Power Chart
-ax3 = fig.add_axes([0.072, 0.47, 0.856, 0.07])
+#ax3 = fig.add_axes([0.072, 0.47, 0.856, 0.07])
+ax3 = fig.add_axes([x, 0.47, y, 0.07])
 ax3.axes.get_xaxis().set_visible(False)
 ax3.set_xlim(0, deadline)
 ax3.yaxis.set_major_locator(ticker.MultipleLocator(1))
@@ -351,7 +362,8 @@ ax3.grid(True)
 ax3.plot(power_y, core2, color='green')
 
 ## Core3 Power Chart
-ax4 = fig.add_axes([0.072, 0.63, 0.856, 0.07])
+#ax4 = fig.add_axes([0.072, 0.63, 0.856, 0.07])
+ax4 = fig.add_axes([x, 0.63, y, 0.07])
 ax4.axes.get_xaxis().set_visible(False)
 ax4.set_xlim(0, deadline)
 ax4.yaxis.set_major_locator(ticker.MultipleLocator(1))
@@ -362,7 +374,8 @@ ax4.grid(True)
 ax4.plot(power_y, core3, color='green')
 
 ## Core4 Power Chart
-ax5 = fig.add_axes([0.072, 0.79, 0.856, 0.07])
+#ax5 = fig.add_axes([0.072, 0.79, 0.856, 0.07])
+ax5 = fig.add_axes([x, 0.79, y, 0.07])
 ax5.axes.get_xaxis().set_visible(False)
 ax5.set_xlim(0, deadline)
 ax5.yaxis.set_major_locator(ticker.MultipleLocator(1))
@@ -373,7 +386,8 @@ ax5.grid(True)
 ax5.plot(power_y, core4, color='green')
 
 ## Tempreture Chart
-ax6 = fig.add_axes([0.072, 0.05, 0.856, 0.2])
+#ax6 = fig.add_axes([0.072, 0.05, 0.856, 0.2])
+ax6 = fig.add_axes([x, 0.05, y, 0.2])
 # ax6.axes.get_xaxis().set_visible(False)
 ax6.set_xlim(0, deadline)
 ax6.yaxis.set_major_locator(ticker.MultipleLocator(10))
@@ -383,6 +397,8 @@ ax6.set_ylabel('Max. Temperature[°C]',fontsize=12, fontname='Palatino Linotype'
 ax6.grid(True)
 ax6.plot(power_y, temp)
 ax6.plot(power_y, temp_max, '--', color='darkred')
+
+
 
 ## Add Fault Sign To Tasks
 if(Faulty_sign):
