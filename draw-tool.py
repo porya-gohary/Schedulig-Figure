@@ -8,7 +8,7 @@ Usage:
 Options:
     --chart, -c                         draw power and thermal charts [default: False]
     --deadline=N, -d N                  system deadline in millisecond  [default: 100]
-    --output=PATH, -o PATH              PATH of output and format <.pdf | .png | .svg> [default: /out.pdf]
+    --output=PATH, -o PATH              PATH of output and format <.pdf | .png | .svg> [default: out.pdf]
     --version, -v                       show version and exit
     --help, -h                          show this message
 """
@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     if arguments['--output']:
         output = arguments['--output']
-        # print(output)
+    #print(output)
 
     if arguments['--deadline']:
         deadline = int(arguments['--deadline'])
