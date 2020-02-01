@@ -125,26 +125,26 @@ if __name__ == "__main__":
         file_temp = open(default_path/'Temp.txt', 'r')
 
         i = 0
-        for line in file_temp.readlines():
+        for line in file_temp.readlines()[0:deadline]:
             temp[i] = float(line)
             i += 1
 
         i = 0
-        for line in file1.readlines():
+        for line in file1.readlines()[0:deadline]:
             core1[i] = float(line)
             i += 1
         i = 0
-        for line in file2.readlines():
+        for line in file2.readlines()[0:deadline]:
             core2[i] = float(line)
             i += 1
 
         i = 0
-        for line in file3.readlines():
+        for line in file3.readlines()[0:deadline]:
             core3[i] = float(line)
             i += 1
 
         i = 0
-        for line in file4.readlines():
+        for line in file4.readlines()[0:deadline]:
             core4[i] = float(line)
             i += 1
 
