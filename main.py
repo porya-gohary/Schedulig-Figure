@@ -272,7 +272,7 @@ plt.ylim([-10, 36 * core + 10])
 # Draw Deadline
 x = [deadline, deadline]
 y = [0, 26 * core - 1]
-plt.plot(x, y, '--', color='r')
+plt.plot(x, y, '--', color='r',zorder=20)
 plt.text(deadline, 26 * core + 1, 'Deadline', color='r', size=11, **regular_text)
 
 ###########
@@ -338,7 +338,7 @@ z=deadline
 x= 0.2533524 - 0.002975714*z + 0.00001623545*math.pow(z,2) - 3.359788e-8*math.pow(z,3)
 y = 0.3695238 + 0.009609524*z - 0.00006597884*math.pow(z,2) + 1.640212e-7*math.pow(z,3)
 #print(x)
-ax2 = fig.add_axes([x, 0.31, y, 0.07])
+ax2 = fig.add_axes([x, 0.31, y, 0.07],zorder=-2)
 
 ax2.axes.get_xaxis().set_visible(False)
 ax2.set_xlim(0, deadline)
@@ -351,7 +351,7 @@ ax2.grid(True)
 
 ## Core2 Power Chart
 #ax3 = fig.add_axes([0.072, 0.47, 0.856, 0.07])
-ax3 = fig.add_axes([x, 0.47, y, 0.07])
+ax3 = fig.add_axes([x, 0.47, y, 0.07],zorder=-2)
 ax3.axes.get_xaxis().set_visible(False)
 ax3.set_xlim(0, deadline)
 ax3.yaxis.set_major_locator(ticker.MultipleLocator(1))
@@ -363,7 +363,7 @@ ax3.plot(power_y, core2, color='green')
 
 ## Core3 Power Chart
 #ax4 = fig.add_axes([0.072, 0.63, 0.856, 0.07])
-ax4 = fig.add_axes([x, 0.63, y, 0.07])
+ax4 = fig.add_axes([x, 0.63, y, 0.07],zorder=-2)
 ax4.axes.get_xaxis().set_visible(False)
 ax4.set_xlim(0, deadline)
 ax4.yaxis.set_major_locator(ticker.MultipleLocator(1))
@@ -375,7 +375,7 @@ ax4.plot(power_y, core3, color='green')
 
 ## Core4 Power Chart
 #ax5 = fig.add_axes([0.072, 0.79, 0.856, 0.07])
-ax5 = fig.add_axes([x, 0.79, y, 0.07])
+ax5 = fig.add_axes([x, 0.79, y, 0.07],zorder=-2)
 ax5.axes.get_xaxis().set_visible(False)
 ax5.set_xlim(0, deadline)
 ax5.yaxis.set_major_locator(ticker.MultipleLocator(1))
@@ -387,7 +387,7 @@ ax5.plot(power_y, core4, color='green')
 
 ## Tempreture Chart
 #ax6 = fig.add_axes([0.072, 0.05, 0.856, 0.2])
-ax6 = fig.add_axes([x, 0.05, y, 0.2])
+ax6 = fig.add_axes([x, 0.05, y, 0.2],zorder=-2)
 # ax6.axes.get_xaxis().set_visible(False)
 ax6.set_xlim(0, deadline)
 ax6.yaxis.set_major_locator(ticker.MultipleLocator(10))
