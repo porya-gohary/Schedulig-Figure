@@ -4,8 +4,10 @@ Drawing Tool for Real-time Scheduling
 Usage:
     draw-tool                [options]
 
+
 Options:
     --chart, -c                         draw power and thermal charts [default: False]
+    --output=PATH, -o PATH               Address of output and format <.pdf | .png | .svg> [default: /out.pdf]
     --help, -h                          show this message
 """
 import matplotlib
@@ -36,13 +38,17 @@ if __name__ == "__main__":
     print_over = False
     Faulty_sign= False
     charts=True
+    output='out.pdf'
 
     arguments = docopt(__doc__)
     charts = arguments['--chart']
-    #print(power)
+
     if charts not in [True, False]:
         print('Option --chart must be True | False. given {}.'.format(charts))
         exit(1)
+    if arguments['--output']:
+        output=arguments['--output']
+    #print(output)
     if(charts):
         x_axes_distance=26
         offset=x_axes_distance/2
@@ -468,7 +474,7 @@ if __name__ == "__main__":
     # plt.plot(np.arange(10), 4 * np.arange(10))
 
 
-    plt.savefig('test.pdf')
+    plt.savefig(output)
     plt.savefig('test.png')
     plt.savefig('test.svg')
     plt.show()
