@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Drawing Tool for Real-time Scheduling
 
@@ -8,6 +9,7 @@ Options:
     --chart, -c                         draw power and thermal charts [default: False]
     --deadline=N, -d N                  system deadline in millisecond  [default: 100]
     --output=PATH, -o PATH              PATH of output and format <.pdf | .png | .svg> [default: /out.pdf]
+    --version, -v                       show version and exit
     --help, -h                          show this message
 """
 import matplotlib
@@ -43,7 +45,7 @@ if __name__ == "__main__":
     charts = True
     output = 'out.pdf'
 
-    arguments = docopt(__doc__)
+    arguments = docopt(__doc__,version='1.1.0')
     charts = arguments['--chart']
 
     if charts not in [True, False]:
