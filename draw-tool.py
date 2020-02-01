@@ -19,6 +19,7 @@ import matplotlib.ticker as ticker
 from PIL import Image
 import math
 from docopt import docopt
+from pathlib import Path
 
 from matplotlib.gridspec import GridSpec
 if __name__ == "__main__":
@@ -34,7 +35,8 @@ if __name__ == "__main__":
     num_faulty = 0
     x_axes_distance = 13
     offset = 1
-    default_path = 'inputs\\'
+    ## dealing with OS path
+    default_path = Path("inputs/")
 
     print_over = False
     Faulty_sign = False
@@ -54,36 +56,36 @@ if __name__ == "__main__":
 
     if arguments['--deadline']:
         deadline = int(arguments['--deadline'])
-    print(deadline)
+    #print(deadline)
     if(charts):
         x_axes_distance = 26
         offset = x_axes_distance/2
 
-    file = open(default_path+'HI-Tasks.txt', 'r')
+    file = open(default_path/'HI-Tasks.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         j += 1
     num_Hi = j
 
-    file = open(default_path+'LO-Tasks.txt', 'r')
+    file = open(default_path/'LO-Tasks.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         j += 1
     num_lo = j
 
-    file = open(default_path+'Over-Tasks.txt', 'r')
+    file = open(default_path/'Over-Tasks.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         j += 1
     num_over = j
 
-    file = open(default_path+'Fault-Tasks.txt', 'r')
+    file = open(default_path/'Fault-Tasks.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         j += 1
     num_fault = j
 
-    file = open(default_path+'Faulty.txt', 'r')
+    file = open(default_path/'Faulty.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         j += 1
@@ -114,11 +116,11 @@ if __name__ == "__main__":
         temp_max[i] = Max_temp
 
     if(charts):
-        file1 = open(default_path+'core1.txt', 'r')
-        file2 = open(default_path+'core2.txt', 'r')
-        file3 = open(default_path+'core3.txt', 'r')
-        file4 = open(default_path+'core4.txt', 'r')
-        file_temp = open(default_path+'Temp.txt', 'r')
+        file1 = open(default_path/'core1.txt', 'r')
+        file2 = open(default_path/'core2.txt', 'r')
+        file3 = open(default_path/'core3.txt', 'r')
+        file4 = open(default_path/'core4.txt', 'r')
+        file_temp = open(default_path/'Temp.txt', 'r')
 
         i = 0
         for line in file_temp.readlines():
@@ -188,7 +190,7 @@ if __name__ == "__main__":
 
     # initialize and Read HI Tasks From File
     T = [Task() for _ in range(num_Hi)]
-    file = open(default_path+'HI-Tasks.txt', 'r')
+    file = open(default_path/'HI-Tasks.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         # print(line)
@@ -213,7 +215,7 @@ if __name__ == "__main__":
 
     # initialize and Read LO Tasks From File
     T_lo = [Task_lo() for _ in range(num_lo)]
-    file = open(default_path+'LO-Tasks.txt', 'r')
+    file = open(default_path/'LO-Tasks.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         inputs = line.split('\t')
@@ -235,7 +237,7 @@ if __name__ == "__main__":
 
     # initialize and Read Overrun From File
     ov = [overrun() for _ in range(num_over)]
-    file = open(default_path+'Over-Tasks.txt', 'r')
+    file = open(default_path/'Over-Tasks.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         inputs = line.split('\t')
@@ -260,7 +262,7 @@ if __name__ == "__main__":
 
     # initialize and Read Fault From File
     f = [fault() for _ in range(num_fault)]
-    file = open(default_path+'Fault-Tasks.txt', 'r')
+    file = open(default_path/'Fault-Tasks.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         inputs = line.split('\t')
@@ -281,7 +283,7 @@ if __name__ == "__main__":
         j += 1
 
     f_t = ['none' for _ in range(num_faulty)]
-    file = open(default_path+'Faulty.txt', 'r')
+    file = open(default_path/'Faulty.txt', 'r')
     j = 0
     for line in file.readlines()[1:]:
         line = line.rstrip('\n')
