@@ -291,8 +291,9 @@ for i in range(2, (core * 2) + 2, 2):
 #####
 
 # Write Time under Axes
-for i in range(0, deadline + 10, 10):
-    plt.text(i, -2.5, str(i), color='black', size=10, **regular_text)
+for i in range(0, deadline , 5):
+    if(i%10 == 0):
+        plt.text(i, -2.5, str(i), color='black', size=10, **regular_text)
 # Add Tick for Axes
 for i in range(5, deadline + 5, 5):
     for j in range(1, (core * 2), 2):
