@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Drawing Tool for Real-time Scheduling
+    Copyright © 2020 Pourya Gohari
 
 Usage:
     draw-tool                [options]
