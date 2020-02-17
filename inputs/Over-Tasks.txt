@@ -1,13 +1,1 @@
 # Task specification  [ Name, WCET , Freq, Core, Start Time]
-T^o_1	3	2	1	12
-T^o_1	3	2	2	12
-T^o_1	3	2	3	27
-T^o_2	4	2	1	38
-T^o_2	4	2	2	38
-T^o_2	4	2	4	50
-T^o_3	3	2	3	37
-T^o_3	3	2	4	37
-T^o_3	3	2	2	49
-T^o_4	2	2	1	58
-T^o_4	2	2	2	58
-T^o_4	2	2	4	64

@@ -1,2 +1,2 @@
 # Task specification  [ Name, WCET , Freq, Core, Start Time]
-T_5	5	2	3	52
+T_5	5	2	4	19

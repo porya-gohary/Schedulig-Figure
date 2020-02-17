@@ -305,7 +305,7 @@ if __name__ == "__main__":
     # fig = plt.figure(figsize=(deadline/4, 2.5 * core))
     if(powers and temp_chart):
         fig = plt.figure(figsize=[10*deadline/120, 8])
-    elif(temp_chart):
+    elif(temp_chart or powers):
         fig = plt.figure(figsize=[10*deadline/120, 6])
     else:
         fig = plt.figure(figsize=[10*deadline/120, 4])
@@ -314,6 +314,8 @@ if __name__ == "__main__":
         ax = fig.add_axes([0, 0.25, 1, 1])
     elif(temp_chart):
         ax = fig.add_axes([0, 0.4, 1, 1])
+    elif(powers):
+        ax = fig.add_axes([0, 0.25, 1, 1])
     else:
         ax = fig.add_subplot(111)
     plt.axis('off')
@@ -324,6 +326,8 @@ if __name__ == "__main__":
     if(powers and temp_chart):
         plt.ylim([-10, (x_axes_distance+10) * core + 10])
     elif(temp_chart):
+        plt.ylim([-10, (x_axes_distance+10) * core + 10])
+    if(powers):
         plt.ylim([-10, (x_axes_distance+10) * core + 10])
         # plt.ylim([-30, (x_axes_distance+10) * core + 5])
     else:
@@ -353,6 +357,13 @@ if __name__ == "__main__":
             ax.arrow(0, (x_axes_distance/2 * (i - 1)), deadline + 2,
                      0, head_width=1, head_length=1, fc='k', ec='k')
             t += 1
+    elif(powers):
+        for i in range(2, (core * 2) + 2, 2):
+            plt.text(-5, 5 + (x_axes_distance/2 * (i - 1)), 'Core ' +
+                     str(t), color='black', size=12, **bold_text)
+            ax.arrow(0, (x_axes_distance/2 * (i - 1)), deadline + 2,
+                     0, head_width=1, head_length=1, fc='k', ec='k')
+            t += 1
     else:
         for i in range(1, (core * 2), 2):
             plt.text(-5, offset+5 + (x_axes_distance/2 * (i - 1)),
@@ -369,6 +380,13 @@ if __name__ == "__main__":
             plt.text(i, -2.5, str(i), color='black', size=10, **regular_text)
     # Add Tick for Axes
     if(powers and temp_chart):
+        for i in range(5, deadline + 5, 5):
+            for j in range(1, (core * 2), 2):
+                x = [i, i]
+                y = [x_axes_distance/2 * j - 0.5, x_axes_distance/2 * j]
+                plt.plot(x, y, '-', color='black')
+    # Add Tick for Axes
+    elif(powers):
         for i in range(5, deadline + 5, 5):
             for j in range(1, (core * 2), 2):
                 x = [i, i]
@@ -501,7 +519,81 @@ if __name__ == "__main__":
                                  * 3+10, 225+((y.core)*125))
                     # print(y.Wcet)
 
-    if(temp_chart and (not powers)):
+    elif(powers and (not temp_chart)):
+        # Core1 Power Chart
+        # ax2 = fig.add_axes([0.072, 0.31, 0.856, 0.07])
+        # ax2 = fig.add_axes([0.102, 0.31, 0.8, 0.07])
+        # ax2 = fig.add_axes([0.126, 0.31, 0.744, 0.07])
+        z = deadline
+        x = 0.2533524 - 0.002975714*z + 0.00001623545 * \
+            math.pow(z, 2) - 3.359788e-8*math.pow(z, 3)
+        y = 0.3695238 + 0.009609524*z - 0.00006597884 * \
+            math.pow(z, 2) + 1.640212e-7*math.pow(z, 3)
+        # print(x)
+        ax2 = fig.add_axes([x, 0.31, y, 0.07], zorder=-2)
+
+        ax2.axes.get_xaxis().set_visible(False)
+        ax2.set_xlim(0, deadline)
+        ax2.yaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax2.tick_params(axis='both', which='major', labelsize=7)
+        ax2.set_ylim(0, 4)
+        ax2.set_ylabel('Core 1\nPower(W)', fontname='Palatino Linotype')
+        ax2.plot(power_y, core1, color='green')
+        ax2.grid(True)
+
+        # Core2 Power Chart
+        # ax3 = fig.add_axes([0.072, 0.47, 0.856, 0.07])
+        ax3 = fig.add_axes([x, 0.47, y, 0.07], zorder=-2)
+        ax3.axes.get_xaxis().set_visible(False)
+        ax3.set_xlim(0, deadline)
+        ax3.yaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax3.tick_params(axis='both', which='major', labelsize=7)
+        ax3.set_ylim(0, 4)
+        ax3.set_ylabel('Core 2\nPower(W)', fontname='Palatino Linotype')
+        ax3.grid(True)
+        ax3.plot(power_y, core2, color='green')
+
+        # Core3 Power Chart
+        # ax4 = fig.add_axes([0.072, 0.63, 0.856, 0.07])
+        ax4 = fig.add_axes([x, 0.63, y, 0.07], zorder=-2)
+        ax4.axes.get_xaxis().set_visible(False)
+        ax4.set_xlim(0, deadline)
+        ax4.yaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax4.tick_params(axis='both', which='major', labelsize=7)
+        ax4.set_ylim(0, 4)
+        ax4.set_ylabel('Core 3\nPower(W)', fontname='Palatino Linotype')
+        ax4.grid(True)
+        ax4.plot(power_y, core3, color='green')
+
+        # Core4 Power Chart
+        # ax5 = fig.add_axes([0.072, 0.79, 0.856, 0.07])
+        ax5 = fig.add_axes([x, 0.79, y, 0.07], zorder=-2)
+        ax5.axes.get_xaxis().set_visible(False)
+        ax5.set_xlim(0, deadline)
+        ax5.yaxis.set_major_locator(ticker.MultipleLocator(1))
+        ax5.tick_params(axis='both', which='major', labelsize=7)
+        ax5.set_ylim(0, 4)
+        ax5.set_ylabel('Core 4\nPower(W)', fontname='Palatino Linotype')
+        ax5.grid(True)
+        ax5.plot(power_y, core4, color='green')
+
+    # Add Fault Sign To Tasks
+    if(Faulty_sign):
+        im = Image.open('fault.png')
+        height = int(im.size[1]/10)
+        width = int(im.size[0]/10)
+        # print(width)
+        im = im.resize((width, height), Image.NEAREST)
+        im = np.array(im).astype(np.float) / 255
+        for x in f_t:
+            # print(x+ "FAULTY")
+            for y in T:
+                # print(y.name)
+                if (y.name == x):
+                    fig.figimage(im, int(y.start)*8+(y.Wcet)
+                                 * 3+10, 225+((y.core)*125))
+
+    elif(temp_chart and (not powers)):
         # Tempreture Chart
         # ax6 = fig.add_axes([0.072, 0.05, 0.856, 0.2])
         z = deadline
