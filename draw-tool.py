@@ -7,7 +7,8 @@ Usage:
     draw-tool                [options]
 
 Options:
-    --chart, -c                         draw power and thermal charts [default: False]
+    --power, -p                         draw power charts [default: False]
+    --temp, -t                          draw thermal chart [default: False]
     --deadline=N, -d N                  system deadline in millisecond  [default: 100]
     --output=PATH, -o PATH              PATH of output and format <.pdf | .png | .svg> [default: out.pdf]
     --version, -v                       show version and exit
@@ -38,29 +39,36 @@ if __name__ == "__main__":
     num_faulty = 0
     x_axes_distance = 13
     offset = 1
-    ## dealing with OS path
+    # dealing with OS path
     default_path = Path("inputs/")
 
     print_over = False
     Faulty_sign = False
-    charts = True
+    powers = True
+    temp_chart = True
     output = 'out.pdf'
 
-    arguments = docopt(__doc__,version='1.1.0')
-    charts = arguments['--chart']
+    arguments = docopt(__doc__, version='1.2.0')
+    powers = arguments['--power']
 
-    if charts not in [True, False]:
-        print('Option --chart must be True | False. given {}.'.format(charts))
+    if powers not in [True, False]:
+        print('Option --power must be True | False. given {}.'.format(powers))
+        exit(1)
+
+    temp_chart = arguments['--temp']
+
+    if temp_chart not in [True, False]:
+        print('Option --temp must be True | False. given {}.'.format(temp))
         exit(1)
 
     if arguments['--output']:
         output = arguments['--output']
-    #print(output)
+    # print(output)
 
     if arguments['--deadline']:
         deadline = int(arguments['--deadline'])
-    #print(deadline)
-    if(charts):
+    # print(deadline)
+    if(powers):
         x_axes_distance = 26
         offset = x_axes_distance/2
 
@@ -118,17 +126,18 @@ if __name__ == "__main__":
     for i in range(0, deadline):
         temp_max[i] = Max_temp
 
-    if(charts):
-        file1 = open(default_path/'core1.txt', 'r')
-        file2 = open(default_path/'core2.txt', 'r')
-        file3 = open(default_path/'core3.txt', 'r')
-        file4 = open(default_path/'core4.txt', 'r')
+    if(temp_chart):
         file_temp = open(default_path/'Temp.txt', 'r')
-
         i = 0
         for line in file_temp.readlines()[0:deadline]:
             temp[i] = float(line)
             i += 1
+
+    if(powers):
+        file1 = open(default_path/'core1.txt', 'r')
+        file2 = open(default_path/'core2.txt', 'r')
+        file3 = open(default_path/'core3.txt', 'r')
+        file4 = open(default_path/'core4.txt', 'r')
 
         i = 0
         for line in file1.readlines()[0:deadline]:
@@ -294,13 +303,17 @@ if __name__ == "__main__":
         j += 1
 
     # fig = plt.figure(figsize=(deadline/4, 2.5 * core))
-    if(charts):
+    if(powers and temp_chart):
         fig = plt.figure(figsize=[10*deadline/120, 8])
+    elif(temp_chart):
+        fig = plt.figure(figsize=[10*deadline/120, 6])
     else:
         fig = plt.figure(figsize=[10*deadline/120, 4])
     # figure(num=None, figsize=(8, 6), dpi=80, facecolor='w', edgecolor='k')
-    if(charts):
+    if(powers and temp_chart):
         ax = fig.add_axes([0, 0.25, 1, 1])
+    elif(temp_chart):
+        ax = fig.add_axes([0, 0.4, 1, 1])
     else:
         ax = fig.add_subplot(111)
     plt.axis('off')
@@ -308,8 +321,11 @@ if __name__ == "__main__":
     # ax.grid()
 
     plt.xlim([-10, deadline + 10])
-    if(charts):
+    if(powers and temp_chart):
         plt.ylim([-10, (x_axes_distance+10) * core + 10])
+    elif(temp_chart):
+        plt.ylim([-10, (x_axes_distance+10) * core + 10])
+        # plt.ylim([-30, (x_axes_distance+10) * core + 5])
     else:
         plt.ylim([0, x_axes_distance * core + 5])
 
@@ -330,7 +346,7 @@ if __name__ == "__main__":
     y = [0, x_axes_distance * core + 1]
     plt.plot(x, y, '-', color='black')
     t = 1
-    if(charts):
+    if(powers and temp_chart):
         for i in range(2, (core * 2) + 2, 2):
             plt.text(-5, 5 + (x_axes_distance/2 * (i - 1)), 'Core ' +
                      str(t), color='black', size=12, **bold_text)
@@ -352,7 +368,7 @@ if __name__ == "__main__":
         if(i % 10 == 0):
             plt.text(i, -2.5, str(i), color='black', size=10, **regular_text)
     # Add Tick for Axes
-    if(charts):
+    if(powers and temp_chart):
         for i in range(5, deadline + 5, 5):
             for j in range(1, (core * 2), 2):
                 x = [i, i]
@@ -396,11 +412,11 @@ if __name__ == "__main__":
         plt.text(x.start + (x.Wcet / 2), offset + (x_axes_distance * (x.core - 1)) + 5 * x.Freq / Max_freq, x.name, color='black', size=17,
                  **regular_text)
 
-    if(charts):
+    if(powers and temp_chart):
         # Core1 Power Chart
-        #ax2 = fig.add_axes([0.072, 0.31, 0.856, 0.07])
-        #ax2 = fig.add_axes([0.102, 0.31, 0.8, 0.07])
-        #ax2 = fig.add_axes([0.126, 0.31, 0.744, 0.07])
+        # ax2 = fig.add_axes([0.072, 0.31, 0.856, 0.07])
+        # ax2 = fig.add_axes([0.102, 0.31, 0.8, 0.07])
+        # ax2 = fig.add_axes([0.126, 0.31, 0.744, 0.07])
         z = deadline
         x = 0.2533524 - 0.002975714*z + 0.00001623545 * \
             math.pow(z, 2) - 3.359788e-8*math.pow(z, 3)
@@ -419,7 +435,7 @@ if __name__ == "__main__":
         ax2.grid(True)
 
         # Core2 Power Chart
-        #ax3 = fig.add_axes([0.072, 0.47, 0.856, 0.07])
+        # ax3 = fig.add_axes([0.072, 0.47, 0.856, 0.07])
         ax3 = fig.add_axes([x, 0.47, y, 0.07], zorder=-2)
         ax3.axes.get_xaxis().set_visible(False)
         ax3.set_xlim(0, deadline)
@@ -431,7 +447,7 @@ if __name__ == "__main__":
         ax3.plot(power_y, core2, color='green')
 
         # Core3 Power Chart
-        #ax4 = fig.add_axes([0.072, 0.63, 0.856, 0.07])
+        # ax4 = fig.add_axes([0.072, 0.63, 0.856, 0.07])
         ax4 = fig.add_axes([x, 0.63, y, 0.07], zorder=-2)
         ax4.axes.get_xaxis().set_visible(False)
         ax4.set_xlim(0, deadline)
@@ -443,7 +459,7 @@ if __name__ == "__main__":
         ax4.plot(power_y, core3, color='green')
 
         # Core4 Power Chart
-        #ax5 = fig.add_axes([0.072, 0.79, 0.856, 0.07])
+        # ax5 = fig.add_axes([0.072, 0.79, 0.856, 0.07])
         ax5 = fig.add_axes([x, 0.79, y, 0.07], zorder=-2)
         ax5.axes.get_xaxis().set_visible(False)
         ax5.set_xlim(0, deadline)
@@ -455,13 +471,13 @@ if __name__ == "__main__":
         ax5.plot(power_y, core4, color='green')
 
         # Tempreture Chart
-        #ax6 = fig.add_axes([0.072, 0.05, 0.856, 0.2])
+        # ax6 = fig.add_axes([0.072, 0.05, 0.856, 0.2])
         ax6 = fig.add_axes([x, 0.05, y, 0.2], zorder=-2)
         # ax6.axes.get_xaxis().set_visible(False)
         ax6.set_xlim(0, deadline)
         ax6.yaxis.set_major_locator(ticker.MultipleLocator(10))
-        ax6.tick_params(axis='both', which='major', labelsize=8)
-        ax6.set_ylim(0, 80)
+        ax6.tick_params(axis='both', which='major', labelsize=10)
+        ax6.set_ylim(40, 80)
         ax6.set_ylabel(
             'Max. Temperature[°C]', fontsize=12, fontname='Palatino Linotype')
         ax6.grid(True)
@@ -477,7 +493,7 @@ if __name__ == "__main__":
         im = im.resize((width, height), Image.NEAREST)
         im = np.array(im).astype(np.float) / 255
         for x in f_t:
-            #print(x+ "FAULTY")
+            # print(x+ "FAULTY")
             for y in T:
                 # print(y.name)
                 if (y.name == x):
@@ -485,7 +501,26 @@ if __name__ == "__main__":
                                  * 3+10, 225+((y.core)*125))
                     # print(y.Wcet)
 
-    # plt.plot(np.arange(10), 4 * np.arange(10))
+    if(temp_chart and (not powers)):
+        # Tempreture Chart
+        # ax6 = fig.add_axes([0.072, 0.05, 0.856, 0.2])
+        z = deadline
+        x = 0.2533524 - 0.002975714*z + 0.00001623545 * \
+            math.pow(z, 2) - 3.359788e-8*math.pow(z, 3)
+        y = 0.3695238 + 0.009609524*z - 0.00006597884 * \
+            math.pow(z, 2) + 1.640212e-7*math.pow(z, 3)
+
+        ax6 = fig.add_axes([x, 0.15, y, 0.25], zorder=-2)
+        # ax6.axes.get_xaxis().set_visible(False)
+        ax6.set_xlim(0, deadline)
+        ax6.yaxis.set_major_locator(ticker.MultipleLocator(10))
+        ax6.tick_params(axis='both', which='major', labelsize=10)
+        ax6.set_ylim(40, 80)
+        ax6.set_ylabel(
+            'Max. Temperature[°C]', fontsize=12, fontname='Palatino Linotype')
+        ax6.grid(True)
+        ax6.plot(power_y, temp)
+        ax6.plot(power_y, temp_max, '--', color='darkred')
 
     plt.savefig(output)
     plt.savefig('test.png')
